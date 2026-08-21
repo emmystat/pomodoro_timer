@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Focus — Pomodoro, Checklist &amp; Ambience</title>
+<meta name="description" content="A Pomodoro focus timer with a draggable daily checklist and ambient background sounds. Works offline, no build step." />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#0e1020" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./css/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='54' r='38' fill='none' stroke='%236c7cff' stroke-width='9'/%3E%3Cpath d='M50 54V32' stroke='%23ff6b81' stroke-width='9' stroke-linecap='round'/%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="bg-aurora" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+</div>
+
+<a class="skip-link" href="#timer-panel">Skip to timer</a>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="54" r="38" fill="none" stroke="currentColor" stroke-width="9" opacity=".35"/>
+      <path d="M50 54V30" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+      <path d="M50 54l18 11" stroke="currentColor" stroke-width="9" stroke-linecap="round" opacity=".7"/>
+    </svg>
+    <span class="brand-text">Focus<span class="dot">.</span></span>
+  </div>
+
+  <div class="topbar-actions">
+    <div class="streak" title="Focus sessions completed today">
+      <span class="streak-num" id="statSessions">0</span>
+      <span class="streak-label">sessions</span>
+    </div>
+    <div class="streak" title="Total focused time today">
+      <span class="streak-num" id="statMinutes">0m</span>
+      <span class="streak-label">focused</span>
+    </div>
+    <button class="icon-btn" id="btnZen" type="button" title="Zen mode (Z)" aria-label="Toggle zen mode">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="icon-btn" id="btnTheme" type="button" title="Toggle theme (T)" aria-label="Toggle color theme">
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="icon-btn" id="btnHelp" type="button" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.4 9.2a2.7 2.7 0 015.2.9c0 1.8-2.6 2-2.6 3.9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.2" fill="currentColor"/></svg>
+    </button>
+    <button class="icon-btn" id="btnSettings" type="button" title="Settings" aria-label="Open settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.11a1.7 1.7 0 00-1.11-1.55 1.7 1.7 0 00-1.87.34l-.06.06A2 2 0 114.17 17l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.11a1.7 1.7 0 001.55-1.11 1.7 1.7 0 00-.34-1.87l-.06-.06A2 2 0 117 4.17l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.11a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V10a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.11a1.7 1.7 0 00-1.49 1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- ───────────────────────── TIMER ───────────────────────── -->
+  <section class="panel timer-panel" id="timer-panel" aria-labelledby="timerHeading">
+    <h2 class="sr-only" id="timerHeading">Pomodoro timer</h2>
+
+    <div class="mode-tabs" role="tablist" aria-label="Timer mode">
+      <button class="mode-tab is-active" role="tab" aria-selected="true" data-mode="focus" type="button">Focus</button>
+      <button class="mode-tab" role="tab" aria-selected="false" data-mode="short" type="button">Short break</button>
+      <button class="mode-tab" role="tab" aria-selected="false" data-mode="long" type="button">Long break</button>
+    </div>
+
+    <div class="dial-wrap">
+      <svg class="dial" viewBox="0 0 320 320" aria-hidden="true">
+        <defs>
+          <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--ring-a)" />
+            <stop offset="100%" stop-color="var(--ring-b)" />
+          </linearGradient>
+        </defs>
+        <circle class="dial-track" cx="160" cy="160" r="140" />
+        <circle class="dial-progress" id="dialProgress" cx="160" cy="160" r="140"
+                stroke="url(#ringGrad)" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="0" />
+      </svg>
+
+      <div class="dial-center">
+        <div class="time-display" id="timeDisplay" role="timer" aria-live="off" aria-atomic="true">25:00</div>
+        <div class="dial-sub" id="dialSub">Ready when you are</div>
+        <div class="pips" id="cyclePips" aria-label="Pomodoros until long break"></div>
+      </div>
+    </div>
+
+    <p class="now-focusing" id="nowFocusing" hidden>
+      <span class="nf-label">Now focusing</span>
+      <span class="nf-task" id="nowFocusingTask"></span>
+    </p>
+
+    <div class="controls">
+      <button class="btn btn-ghost" id="btnReset" type="button" title="Reset (R)" aria-label="Reset timer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1114.9 5.6M3.5 12V6.6M3.5 12h5.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <button class="btn btn-primary" id="btnStart" type="button" aria-label="Start timer">
+        <svg class="ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5l11 6.5-11 6.5z" fill="currentColor"/></svg>
+        <svg class="ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5.5v13M15 5.5v13" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <span id="btnStartLabel">Start</span>
+      </button>
+
+      <button class="btn btn-ghost" id="btnSkip" type="button" title="Skip (S)" aria-label="Skip to next session">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5.5l9 6.5-9 6.5z" fill="currentColor"/><path d="M18 5.5v13" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── CHECKLIST ───────────────────────── -->
+  <section class="panel tasks-panel" aria-labelledby="tasksHeading">
+    <div class="panel-head">
+      <h2 id="tasksHeading">Today's checklist</h2>
+      <span class="chip" id="taskCount">0 / 0</span>
+    </div>
+
+    <div class="task-progress" role="progressbar" aria-labelledby="tasksHeading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="taskProgressBar">
+      <span class="task-progress-fill" id="taskProgressFill"></span>
+    </div>
+
+    <form class="task-add" id="taskForm" autocomplete="off">
+      <input class="task-input" id="taskInput" type="text" placeholder="What needs doing today?" aria-label="New task" maxlength="140" />
+      <label class="est-wrap" title="Estimated pomodoros">
+        <span class="sr-only">Estimated pomodoros</span>
+        <input class="est-input" id="taskEst" type="number" min="1" max="12" step="1" value="1" />
+      </label>
+      <button class="btn btn-add" type="submit" aria-label="Add task">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+    </form>
+
+    <ul class="task-list" id="taskList" aria-live="polite"></ul>
+
+    <p class="empty-state" id="taskEmpty">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7.5h15M4.5 12h15M4.5 16.5h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Nothing here yet. Add your first task above, then drag to reorder.
+    </p>
+
+    <div class="task-foot">
+      <button class="link-btn" id="btnClearDone" type="button">Clear completed</button>
+      <button class="link-btn danger" id="btnClearAll" type="button">Clear all</button>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── AMBIENCE ───────────────────────── -->
+  <section class="panel sound-panel" aria-labelledby="soundHeading">
+    <div class="panel-head">
+      <h2 id="soundHeading">Ambience</h2>
+      <button class="chip chip-btn" id="btnMuteAll" type="button" aria-pressed="false">Mute all</button>
+    </div>
+
+    <div class="master-vol">
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="vol-ico"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4zM16 9a4 4 0 010 6M18.8 6.4a7.5 7.5 0 010 11.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <input type="range" id="masterVol" min="0" max="100" value="70" aria-label="Master volume" />
+      <output id="masterVolOut">70</output>
+    </div>
+
+    <div class="sound-grid" id="soundGrid"></div>
+
+    <label class="switch-row">
+      <input type="checkbox" id="tickToggle" />
+      <span class="switch" aria-hidden="true"></span>
+      <span class="switch-text">Ticking clock while focusing</span>
+    </label>
+  </section>
+</main>
+
+<footer class="footnote">
+  <span>Runs entirely in your browser. Your tasks and settings stay on this device.</span>
+</footer>
+
+<!-- ───────────────────────── SETTINGS DIALOG ───────────────────────── -->
+<div class="modal" id="settingsModal" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-head">
+      <h3 id="settingsTitle">Settings</h3>
+      <button class="icon-btn" data-close="1" type="button" aria-label="Close settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="field-grid">
+        <label class="field">
+          <span>Focus (min)</span>
+          <input type="number" id="setFocus" min="1" max="180" step="1" />
+        </label>
+        <label class="field">
+          <span>Short break (min)</span>
+          <input type="number" id="setShort" min="1" max="60" step="1" />
+        </label>
+        <label class="field">
+          <span>Long break (min)</span>
+          <input type="number" id="setLong" min="1" max="90" step="1" />
+        </label>
+        <label class="field">
+          <span>Long break every</span>
+          <input type="number" id="setInterval" min="2" max="12" step="1" />
+        </label>
+      </div>
+
+      <label class="switch-row">
+        <input type="checkbox" id="setAutoBreak" />
+        <span class="switch" aria-hidden="true"></span>
+        <span class="switch-text">Auto-start breaks</span>
+      </label>
+      <label class="switch-row">
+        <input type="checkbox" id="setAutoFocus" />
+        <span class="switch" aria-hidden="true"></span>
+        <span class="switch-text">Auto-start next focus session</span>
+      </label>
+      <label class="switch-row">
+        <input type="checkbox" id="setChime" />
+        <span class="switch" aria-hidden="true"></span>
+        <span class="switch-text">Chime when a session ends</span>
+      </label>
+      <label class="switch-row">
+        <input type="checkbox" id="setNotify" />
+        <span class="switch" aria-hidden="true"></span>
+        <span class="switch-text">Desktop notifications</span>
+      </label>
+      <label class="switch-row">
+        <input type="checkbox" id="setTitle" />
+        <span class="switch" aria-hidden="true"></span>
+        <span class="switch-text">Show countdown in the tab title</span>
+      </label>
+      <label class="switch-row">
+        <input type="checkbox" id="setCarry" />
+        <span class="switch" aria-hidden="true"></span>
+        <span class="switch-text">Carry unfinished tasks over to the next day</span>
+      </label>
+
+      <p class="modal-note">Changing a duration resets that timer if it isn't running.</p>
+    </div>
+
+    <div class="modal-foot">
+      <button class="link-btn danger" id="btnResetData" type="button">Reset everything</button>
+      <button class="btn btn-primary btn-sm" data-close="1" type="button">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────── SHORTCUTS DIALOG ───────────────────────── -->
+<div class="modal" id="helpModal" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card modal-card-sm" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-head">
+      <h3 id="helpTitle">Keyboard shortcuts</h3>
+      <button class="icon-btn" data-close="1" type="button" aria-label="Close shortcuts">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <ul class="keys">
+        <li><kbd>Space</kbd><span>Start / pause</span></li>
+        <li><kbd>R</kbd><span>Reset current session</span></li>
+        <li><kbd>S</kbd><span>Skip to next session</span></li>
+        <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><span>Focus / short / long</span></li>
+        <li><kbd>N</kbd><span>Jump to the new-task field</span></li>
+        <li><kbd>M</kbd><span>Mute or unmute ambience</span></li>
+        <li><kbd>Z</kbd><span>Zen mode</span></li>
+        <li><kbd>T</kbd><span>Switch theme</span></li>
+        <li><kbd>?</kbd><span>This list</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+<button class="zen-exit" id="btnZenExit" type="button" hidden>Exit zen</button>
+
+<!-- SortableJS from CDN — drag & drop for the checklist (pinned version) -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
+
+<script src="./js/storage.js" defer></script>
+<script src="./js/audio.js" defer></script>
+<script src="./js/timer.js" defer></script>
+<script src="./js/tasks.js" defer></script>
+<script src="./js/app.js" defer></script>
+</body>
+</html>
